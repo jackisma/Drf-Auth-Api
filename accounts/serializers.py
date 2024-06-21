@@ -19,5 +19,22 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Your password and confirm password are not match')
         return attrs 
     
-    def create(self,validated_data):
-        return User.objects.create(**validated_data)
+
+    def create(self, validated_data):
+        user = User(
+            name=validated_data['name'],
+            email=validated_data['email']
+        )
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
+    
+
+
+    
+    
+class UserLoginSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField()
+    class Meta:
+        model = User 
+        fields = ['email','password']
