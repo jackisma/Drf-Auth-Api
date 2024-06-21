@@ -2,7 +2,9 @@ from tkinter import N
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
+# Using BaseUserManager, AbstractBaseUser Classes To Create And Use Django Custom User Model 
 
+# User Manager Class That Does The User and Super User Creation Operations  
 class MyUserManager(BaseUserManager):
     def create_user(self, email,name,remember_me ,password=None,password2=None):
         """
@@ -42,7 +44,7 @@ class MyUserManager(BaseUserManager):
 
 
 
-
+# Custom User Model
 class User(AbstractBaseUser):
     email = models.EmailField(
         verbose_name="email address",

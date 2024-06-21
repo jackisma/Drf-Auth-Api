@@ -208,4 +208,5 @@ SIMPLE_JWT = {
 
 
 
+# In this section i am saying to Django Rest Framework that i am going to use custom user model (My Customized Model)
 AUTH_USER_MODEL = "accounts.User"

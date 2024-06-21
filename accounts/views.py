@@ -5,6 +5,8 @@ from .serializers import UserRegisterSerializer, UserLoginSerializer
 from rest_framework import status
 from django.contrib.auth import authenticate
 
+
+# Sign Up Class View 
 class UserCreation(APIView):
     def post(self, request, format=None):
         serializer = UserRegisterSerializer(data=request.data)
@@ -15,7 +17,7 @@ class UserCreation(APIView):
     
 
 
-
+# Login Class View 
 class LoginView(APIView):
     def post(self, request, format=None):
         serializer = UserLoginSerializer(data=request.data)

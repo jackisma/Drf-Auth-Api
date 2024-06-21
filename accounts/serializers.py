@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import User
 
-
+# User Registeration Serializer 
 class UserRegisterSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(style={'input_type' : 'password'}, write_only=True)
 
@@ -11,7 +11,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'password' : {'write_only' : True}
         }
-
+    # Validate The Data We Received From Client
     def validate(self, attrs):
         password = attrs.get('password')
         password2 = attrs.pop('password2')
@@ -19,7 +19,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Your password and confirm password are not match')
         return attrs 
     
-
+    # User Creation Operation Function 
     def create(self, validated_data):
         user = User(
             name=validated_data['name'],
@@ -32,7 +32,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
 
     
-    
+# User Login Serializer
 class UserLoginSerializer(serializers.ModelSerializer):
     email = serializers.EmailField()
     class Meta:
