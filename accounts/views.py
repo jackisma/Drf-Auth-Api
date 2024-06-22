@@ -19,6 +19,7 @@ def get_tokens_for_user(user):
     }
 
 
+
 # Sign Up Class View 
 class UserCreation(APIView):
     renderer_classes = [UserRenderer]
@@ -30,6 +31,7 @@ class UserCreation(APIView):
             return Response({"token":token ,"msg":"You registered successfuly!"},status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+
 
 
 # Login Class View 
@@ -63,8 +65,12 @@ class UserProfileView(APIView):
         user = request.user 
         serializer = UserProfileSerializer(user)
         return Response(serializer.data,status=status.HTTP_200_OK)
-    
 
+
+
+
+
+# User Change Password Class 
 class UserChangePasswordView(APIView):
     renderer_classes = [UserRenderer]
     permission_classes = [IsAuthenticated]
