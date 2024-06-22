@@ -1,5 +1,11 @@
+from os import link
+from xml.dom import ValidationErr
 from rest_framework import serializers
 from .models import User
+from django.utils.encoding import force_bytes , smart_str , DjangoUnicodeDecodeError
+from django.utils.http import urlsafe_base64_decode , urlsafe_base64_encode
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+
 
 # User Registeration Serializer 
 class UserRegisterSerializer(serializers.ModelSerializer):
@@ -31,6 +37,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     
 
 
+
     
 # User Login Serializer
 class UserLoginSerializer(serializers.ModelSerializer):
@@ -40,12 +47,17 @@ class UserLoginSerializer(serializers.ModelSerializer):
         fields = ['email','password']
 
 
+
+
+
 # User Profile Serializer 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User 
         fields = ['email','password']
         
+
+
 
 
 # User Change Password Serializer 
@@ -66,4 +78,32 @@ class UserChangePasswordSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return attrs
-        
+
+
+
+
+
+
+# First User Password Reset Serializer 
+class ResetPasswordRequestSerializer(serializers.Serializer):
+    email = serializers.EmailField(max_length=255)
+    class Meta:
+        model = User
+        fields = ['email']
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+        if User.objects.filter(email=email).exists():
+            user = User.objects.get(email=email)
+            uid = urlsafe_base64_encode(force_bytes(user.id))
+            print("user id encoded, and it's: ",uid)
+            token = PasswordResetTokenGenerator().make_token(user)
+            print('password reset token: ',token)
+            link = "http://localhost:3000/Api/resetpassword/"+uid+'/'+token
+            print('password reset link: ',link)  
+            return attrs
+        else:
+            raise ValidationErr('User Doesn\'t exist! ')
+
+
+ 

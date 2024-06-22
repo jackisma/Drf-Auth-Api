@@ -9,6 +9,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 
 
+
 # Json Web Token For Each User. 
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
@@ -33,7 +34,6 @@ class UserCreation(APIView):
     
 
 
-
 # Login Class View 
 class LoginView(APIView):
     renderer_classes = [UserRenderer]
@@ -55,8 +55,6 @@ class LoginView(APIView):
 
 
 
-
-
 # User Profile View Class 
 class UserProfileView(APIView):
     renderer_classes = [UserRenderer]
@@ -65,7 +63,6 @@ class UserProfileView(APIView):
         user = request.user 
         serializer = UserProfileSerializer(user)
         return Response(serializer.data,status=status.HTTP_200_OK)
-
 
 
 
@@ -81,3 +78,16 @@ class UserChangePasswordView(APIView):
         else:
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
         
+        
+
+# User Reset Password Classes 
+# 1 ---> User Reset Password Request View 
+class ResetPasswordRequestView(APIView):
+    renderer_classes = [UserRenderer]
+    def post(self, request, format=None):
+        serializer = ResetPasswordRequestSerializer(data=request.data)
+        if serializer.is_valid():
+            return Response({"msg":"Reset Password's Link Sent, Please Check Your Email BOX."},status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
