@@ -1,3 +1,4 @@
+from multiprocessing import context
 from django.shortcuts import render
 from rest_framework.response import Response 
 from rest_framework.views import APIView
@@ -21,6 +22,8 @@ def get_tokens_for_user(user):
 
 
 
+
+
 # Sign Up Class View 
 class UserCreation(APIView):
     renderer_classes = [UserRenderer]
@@ -31,7 +34,9 @@ class UserCreation(APIView):
             token = get_tokens_for_user(user)
             return Response({"token":token ,"msg":"You registered successfuly!"},status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
+
 
 
 # Login Class View 
@@ -55,6 +60,7 @@ class LoginView(APIView):
 
 
 
+
 # User Profile View Class 
 class UserProfileView(APIView):
     renderer_classes = [UserRenderer]
@@ -63,6 +69,8 @@ class UserProfileView(APIView):
         user = request.user 
         serializer = UserProfileSerializer(user)
         return Response(serializer.data,status=status.HTTP_200_OK)
+
+
 
 
 
@@ -78,6 +86,8 @@ class UserChangePasswordView(APIView):
         else:
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
         
+
+
         
 
 # User Reset Password Classes 
@@ -91,3 +101,15 @@ class ResetPasswordRequestView(APIView):
         
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
+
+
+
+
+# 2 ---> User Reset Password View 
+class ResetPasswordView(APIView):
+    renderer_classes = [UserRenderer]
+    def post(self, request ,uid, token, format=None):
+        serializer = ResetPasswordSerializer(data=request.data, context={"uid":uid,"token":token})
+        if serializer.is_valid():
+            return Response({"msg":"password reset successfully"},status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)

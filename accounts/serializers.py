@@ -106,4 +106,32 @@ class ResetPasswordRequestSerializer(serializers.Serializer):
             raise ValidationErr('User Doesn\'t exist! ')
 
 
+
+
  
+
+# User Reset Password Serializer 
+class ResetPasswordSerializer(serializers.Serializer): 
+    password = serializers.CharField(max_length = 255,style={'input_type':'password'},write_only=True)
+    password2 = serializers.CharField(max_length = 255,style={'input_type':'password'},write_only=True)
+    class Meta:
+        model = User
+        fields = ['password','password2']
+    
+    # Check the Validation Between User's New Password and Confirm New Password  
+    def validate(self, attrs):
+        password = attrs.get('password')
+        password2 = attrs.get('password2')
+        uid = self.context.get('uid')
+        token = self.context.get('token')
+
+        if password != password2:
+            raise serializers.ValidationError('Your Password and confirm Password Doesn\'t Match!')
+        # decoding the uid and find the specific user
+        id = smart_str(urlsafe_base64_decode(uid))
+        user = User.objects.get(id=id)
+        if not PasswordResetTokenGenerator().check_token(user,token):
+            raise serializers.ValidationError('Token is Expired or Invalid')
+        user.set_password(password)
+        user.save()
+        return attrs
