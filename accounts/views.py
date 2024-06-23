@@ -32,11 +32,10 @@ class UserCreation(APIView):
     renderer_classes = [UserRenderer]
     def post(self, request, format=None):
         serializer = UserRegisterSerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             user = serializer.save()
             token = get_tokens_for_user(user)
             return Response({"token":token ,"msg":"You registered successfuly!"},status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -47,7 +46,7 @@ class LoginView(APIView):
     renderer_classes = [UserRenderer]
     def post(self, request, format=None):
         serializer = UserLoginSerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             email = serializer.data.get('email')
             password = serializer.data.get('password')
             user = authenticate(email=email,password=password)
@@ -57,10 +56,6 @@ class LoginView(APIView):
             else:
                 return Response({"errors":"Login Faild , Email or Password is not valid !"} , status=status.HTTP_404_NOT_FOUND)
             
-        else:
-            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-        
-
 
 
 
