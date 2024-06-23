@@ -1,4 +1,6 @@
+from http.client import responses
 from multiprocessing import context
+import stat
 from django.shortcuts import render
 from rest_framework.response import Response 
 from rest_framework.views import APIView
@@ -8,6 +10,7 @@ from django.contrib.auth import authenticate
 from .renderers import UserRenderer 
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
+
 
 
 
@@ -113,3 +116,19 @@ class ResetPasswordView(APIView):
         if serializer.is_valid():
             return Response({"msg":"password reset successfully"},status=status.HTTP_200_OK)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+# User Logout View
+# For logout functionality we use the simple jwt blacklist token functionality system. 
+class LogoutView(APIView):
+    def post(self, request, format=None):
+        try:
+            refresh_token = request.data.get('refresh_token')
+            token_object = RefreshToken(refresh_token)
+            token_object.blacklist()
+            return Response({"msg" : "You Logout Successfully"},status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)

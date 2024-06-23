@@ -10,4 +10,5 @@ urlpatterns = [
     path('change_password/',UserChangePasswordView.as_view(),name="change_password"),
     path('reset-password/' , ResetPasswordRequestView.as_view(),name="reset-password"),
     path('reset-password/<uid>/<token>/',ResetPasswordView.as_view(),name='reset-password-done'),
+    path('logout/',LogoutView.as_view(),name='logout'),
 ]
